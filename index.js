@@ -80,15 +80,14 @@ bot.onText(/^\/summon$/, async (msg, match) => {
       }
 
       let users = summonGroup.users
-      console.log(users)
+
       users = _.chunk(users, 5)
-      console.log(users)
+
       users.forEach(item => {
         let message = ``
         item.forEach(user => {
           message += ` @${user.username}`
         })
-        console.log(message)
         bot.sendMessage(chatId, message.trim())
       })
     }
@@ -99,7 +98,7 @@ bot.onText(/^\/summon$/, async (msg, match) => {
 })
 
 bot.onText(/^\/summon\s(\S+)$/, async (msg, match) => {
-  console.log(msg, match[1])
+  console.log(msg, match)
 
   const chatId = msg.chat.id
 
@@ -174,6 +173,7 @@ bot.onText(/^\/summon\s(\S+)$/, async (msg, match) => {
 })
 
 bot.onText(/^\/summon_add$/, async (msg, match) => {
+  console.log(msg)
   const chatId = msg.chat.id
 
   try {
@@ -210,13 +210,9 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
       await user.save()
     }
 
-    console.log(summonGroup)
-
     let findUser = summonGroup.users.filter(item => {
       return item.telegram_id === user.telegram_id
     })
-
-    console.log(findUser)
 
     if (findUser.length > 0) {
       bot.sendMessage(chatId, 'You were already in this group')
@@ -235,8 +231,7 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
 })
 
 bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
-  console.log(msg)
-
+  console.log(msg, match)
   const chatId = msg.chat.id
 
   const commandTitle = match[1]
@@ -262,8 +257,6 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
       return false
     }
 
-    console.log(summonGroup)
-
     let user = await User.findOne({ telegram_id: msg.from.id }).exec()
 
     if (!user) {
@@ -280,8 +273,6 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
     let findUser = summonGroup.users.filter(item => {
       return item.telegram_id === user.telegram_id
     })
-
-    console.log(findUser)
 
     if (findUser.length > 0) {
       bot.sendMessage(chatId, 'You were already in this group')
@@ -300,6 +291,7 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
 })
 
 bot.onText(/^\/summon_rem$/, async (msg, match) => {
+  console.log(msg)
   const chatId = msg.chat.id
 
   try {
@@ -335,8 +327,6 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
 
       await user.save()
     }
-
-    console.log(summonGroup)
 
     let findUser = summonGroup.users.filter(item => {
       return item.telegram_id === user.telegram_id
@@ -363,6 +353,7 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
 })
 
 bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
+  console.log(msg, match)
   const chatId = msg.chat.id
 
   const commandTitle = match[1]
@@ -400,8 +391,6 @@ bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
 
       await user.save()
     }
-
-    console.log(summonGroup)
 
     let findUser = summonGroup.users.filter(item => {
       return item.telegram_id === user.telegram_id
