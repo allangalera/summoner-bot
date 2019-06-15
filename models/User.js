@@ -6,7 +6,6 @@ export const userDataSchema = new Schema(
   {
     telegram_id: {
       type: Number,
-      unique: true,
       required: true,
     },
     username: {

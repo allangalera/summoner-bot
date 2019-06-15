@@ -41,7 +41,7 @@ bot.onText(/^\/summon$/, async (msg, match) => {
 
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
-    if (!groupChat) {
+    if (groupChat === null) {
       let summonGroup = new SummonGroup({
         group_id: chatId,
       })
@@ -57,46 +57,47 @@ bot.onText(/^\/summon$/, async (msg, match) => {
       await groupChat.save()
 
       bot.sendMessage(chatId, 'Group Created Successfully')
-    } else {
-      let summonGroup = await SummonGroup.findOne({
-        group_id: chatId,
-        title: 'default',
-      }).exec()
-
-      if (!summonGroup) {
-        summonGroup = new SummonGroup({
-          title: 'default',
-          group_id: chatId,
-        })
-
-        await summonGroup.save()
-
-        groupChat.summon_groups.push(summonGroup)
-
-        await groupChat.save()
-
-        bot.sendMessage(chatId, 'Group Created Successfully')
-
-        return false
-      }
-
-      if (summonGroup.users.length === 0) {
-        bot.sendMessage(chatId, 'This group is empty :(')
-        return false
-      }
-
-      let users = summonGroup.users
-
-      users = _.chunk(users, 5)
-
-      users.forEach(item => {
-        let message = ``
-        item.forEach(user => {
-          message += ` @${user.username}`
-        })
-        bot.sendMessage(chatId, message.trim())
-      })
+      return false
     }
+
+    let summonGroup = await SummonGroup.findOne({
+      group_id: chatId,
+      title: 'default',
+    }).exec()
+
+    if (summonGroup === null) {
+      summonGroup = new SummonGroup({
+        title: 'default',
+        group_id: chatId,
+      })
+
+      await summonGroup.save()
+
+      groupChat.summon_groups.push(summonGroup)
+
+      await groupChat.save()
+
+      bot.sendMessage(chatId, 'Group Created Successfully')
+
+      return false
+    }
+
+    if (summonGroup.users.length === 0) {
+      bot.sendMessage(chatId, 'This group is empty :(')
+      return false
+    }
+
+    let users = summonGroup.users
+
+    users = _.chunk(users, 5)
+
+    users.forEach(item => {
+      let message = ``
+      item.forEach(user => {
+        message += ` @${user.username}`
+      })
+      bot.sendMessage(chatId, message.trim())
+    })
   } catch (err) {
     console.log(err)
     bot.sendMessage(chatId, 'Failed to test')
@@ -116,7 +117,7 @@ bot.onText(/^\/summon\s(\S+)$/, async (msg, match) => {
 
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
-    if (!groupChat) {
+    if (groupChat === null) {
       let summonGroup = new SummonGroup({
         title: commandTitle,
         group_id: chatId,
@@ -131,47 +132,52 @@ bot.onText(/^\/summon\s(\S+)$/, async (msg, match) => {
 
       await groupChat.save()
       bot.sendMessage(chatId, 'Group Created Successfully')
-    } else {
-      let summonGroup = await SummonGroup.findOne({
-        group_id: chatId,
-        title: commandTitle,
-      }).exec()
-
-      if (!summonGroup) {
-        summonGroup = new SummonGroup({
-          title: commandTitle,
-          group_id: chatId,
-        })
-
-        await summonGroup.save()
-
-        groupChat.summon_groups.push(summonGroup)
-
-        await groupChat.save()
-
-        bot.sendMessage(chatId, 'Group Created Successfully')
-
-        return false
-      }
-
-      if (summonGroup.users.length === 0) {
-        bot.sendMessage(chatId, 'This group is empty :(')
-        return false
-      }
-
-      let users = summonGroup.users
-      console.log(users)
-      users = _.chunk(users, 5)
-      console.log(users)
-      users.forEach(item => {
-        let message = ``
-        item.forEach(user => {
-          message += ` @${user.username}`
-        })
-        console.log(message)
-        bot.sendMessage(chatId, message.trim())
-      })
+      return false
     }
+
+    let summonGroup = await SummonGroup.findOne({
+      group_id: chatId,
+      title: commandTitle,
+    }).exec()
+
+    console.log(summonGroup)
+
+    if (summonGroup === null) {
+      summonGroup = new SummonGroup({
+        title: commandTitle,
+        group_id: chatId,
+      })
+
+      console.log(summonGroup)
+
+      await summonGroup.save()
+
+      groupChat.summon_groups.push(summonGroup)
+
+      await groupChat.save()
+
+      bot.sendMessage(chatId, 'Group Created Successfully')
+
+      return false
+    }
+
+    if (summonGroup.users.length === 0) {
+      bot.sendMessage(chatId, 'This group is empty :(')
+      return false
+    }
+
+    let users = summonGroup.users
+    console.log(users)
+    users = _.chunk(users, 5)
+    console.log(users)
+    users.forEach(item => {
+      let message = ``
+      item.forEach(user => {
+        message += ` @${user.username}`
+      })
+      console.log(message)
+      bot.sendMessage(chatId, message.trim())
+    })
   } catch (err) {
     console.log(err)
     bot.sendMessage(chatId, 'Failed to test')
@@ -188,7 +194,7 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
 
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
-    if (!groupChat) {
+    if (groupChat === null) {
       bot.sendMessage(chatId, 'This group is not created yet :(')
       return false
     }
@@ -198,14 +204,14 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
       title: 'default',
     }).exec()
 
-    if (!summonGroup) {
+    if (summonGroup === null) {
       bot.sendMessage(chatId, 'This summon group is not created yet :(')
       return false
     }
 
     let user = await User.findOne({ telegram_id: msg.from.id }).exec()
 
-    if (!user) {
+    if (user === null) {
       user = new User({
         telegram_id: msg.from.id,
         username: msg.from.username,
@@ -248,7 +254,7 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
 
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
-    if (!groupChat) {
+    if (groupChat === null) {
       bot.sendMessage(chatId, 'This group is not created yet :(')
       return false
     }
@@ -258,7 +264,7 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
       title: commandTitle,
     }).exec()
 
-    if (!summonGroup) {
+    if (summonGroup === null) {
       bot.sendMessage(chatId, 'This summon group is not created yet :(')
       return false
     }
@@ -306,7 +312,7 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
 
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
-    if (!groupChat) {
+    if (groupChat === null) {
       bot.sendMessage(chatId, 'This group is not created yet :(')
       return false
     }
@@ -316,7 +322,7 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
       title: 'default',
     }).exec()
 
-    if (!summonGroup) {
+    if (summonGroup === null) {
       bot.sendMessage(chatId, 'This summon group is not created yet :(')
       return false
     }
@@ -370,7 +376,7 @@ bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
 
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
-    if (!groupChat) {
+    if (groupChat === null) {
       bot.sendMessage(chatId, 'This group is not created yet :(')
       return false
     }
@@ -380,14 +386,14 @@ bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
       title: commandTitle,
     }).exec()
 
-    if (!summonGroup) {
+    if (summonGroup === null) {
       bot.sendMessage(chatId, 'This summon group is not created yet :(')
       return false
     }
 
     let user = await User.findOne({ telegram_id: msg.from.id }).exec()
 
-    if (!user) {
+    if (user === null) {
       user = new User({
         telegram_id: msg.from.id,
         username: msg.from.username,
