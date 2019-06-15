@@ -25,6 +25,12 @@ const TOKEN = process.env.BOT_TOKEN
 
 const bot = new TelegramBot(TOKEN, { polling: true })
 
+bot.onText(/^\/ping$/, async msg => {
+  console.log(msg)
+  const chatId = msg.chat.id
+  bot.sendMessage(chatId, 'pong')
+})
+
 bot.onText(/^\/summon$/, async (msg, match) => {
   console.log(msg)
   const chatId = msg.chat.id
