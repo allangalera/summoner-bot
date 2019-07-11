@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node index.js",
-    "build": "babel src --out-dir dist",
-    "serve": "node dist/index.js"
+    "start": "nodemon --exec babel-node src/index.js",
+    "build": "webpack",
+    "serve": "node build/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +22,9 @@
     "@babel/node": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "nodemon": "^1.19.1",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5",
+    "webpack-node-externals": "^1.7.2"
   }
 }

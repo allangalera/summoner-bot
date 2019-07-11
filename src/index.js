@@ -28,7 +28,11 @@ const bot = new TelegramBot(TOKEN, { polling: true })
 bot.onText(/^\/ping$/, async msg => {
   console.log(msg)
   const chatId = msg.chat.id
-  bot.sendMessage(chatId, 'pong')
+
+  bot.sendMessage(chatId, `***Pretty*** \`pong\``, {
+    reply_to_message_id: msg.message_id,
+    parse_mode: 'markdown',
+  })
 })
 
 bot.onText(/^\/summon$/, async (msg, match) => {
@@ -56,7 +60,10 @@ bot.onText(/^\/summon$/, async (msg, match) => {
 
       await groupChat.save()
 
-      bot.sendMessage(chatId, 'Group Created Successfully')
+      bot.sendMessage(chatId, `Group ***default*** Created Successfully`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -77,13 +84,20 @@ bot.onText(/^\/summon$/, async (msg, match) => {
 
       await groupChat.save()
 
-      bot.sendMessage(chatId, 'Group Created Successfully')
+      bot.sendMessage(chatId, `Group ***default*** Created Successfully`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
 
       return false
     }
 
     if (summonGroup.users.length === 0) {
-      bot.sendMessage(chatId, 'This group is empty :(')
+      bot.sendMessage(chatId, `Group ***default*** is empty :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
+
       return false
     }
 
@@ -100,7 +114,11 @@ bot.onText(/^\/summon$/, async (msg, match) => {
     })
   } catch (err) {
     console.log(err)
-    bot.sendMessage(chatId, 'Failed to test')
+
+    bot.sendMessage(chatId, `Failed and I don't know why`, {
+      reply_to_message_id: msg.message_id,
+      parse_mode: 'markdown',
+    })
   }
 })
 
@@ -131,7 +149,15 @@ bot.onText(/^\/summon\s(\S+)$/, async (msg, match) => {
       })
 
       await groupChat.save()
-      bot.sendMessage(chatId, 'Group Created Successfully')
+
+      bot.sendMessage(
+        chatId,
+        `Group ***${commandTitle}*** Created Successfully`,
+        {
+          reply_to_message_id: msg.message_id,
+          parse_mode: 'markdown',
+        }
+      )
       return false
     }
 
@@ -156,13 +182,23 @@ bot.onText(/^\/summon\s(\S+)$/, async (msg, match) => {
 
       await groupChat.save()
 
-      bot.sendMessage(chatId, 'Group Created Successfully')
+      bot.sendMessage(
+        chatId,
+        `Group ***${commandTitle}*** Created Successfully`,
+        {
+          reply_to_message_id: msg.message_id,
+          parse_mode: 'markdown',
+        }
+      )
 
       return false
     }
 
     if (summonGroup.users.length === 0) {
-      bot.sendMessage(chatId, 'This group is empty :(')
+      bot.sendMessage(chatId, `Group ***${commandTitle}*** is empty :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -180,7 +216,11 @@ bot.onText(/^\/summon\s(\S+)$/, async (msg, match) => {
     })
   } catch (err) {
     console.log(err)
-    bot.sendMessage(chatId, 'Failed to test')
+
+    bot.sendMessage(chatId, `Failed and I don't know why`, {
+      reply_to_message_id: msg.message_id,
+      parse_mode: 'markdown',
+    })
   }
 })
 
@@ -195,7 +235,12 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
     if (groupChat === null) {
-      bot.sendMessage(chatId, 'This group is not created yet :(')
+      // bot.sendMessage(chatId, 'This group doesn't exist :(')
+
+      bot.sendMessage(chatId, `No group was created in this chat :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -205,7 +250,12 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
     }).exec()
 
     if (summonGroup === null) {
-      bot.sendMessage(chatId, 'This summon group is not created yet :(')
+      // bot.sendMessage(chatId, 'This summon group doesn't exist :(')
+
+      bot.sendMessage(chatId, `Group ***default*** doesn't exist :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -227,7 +277,12 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
     })
 
     if (findUser.length > 0) {
-      bot.sendMessage(chatId, 'You were already in this group')
+      // bot.sendMessage(chatId, 'You were already in this group')
+
+      bot.sendMessage(chatId, `You are already in the group ***default***`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -235,10 +290,19 @@ bot.onText(/^\/summon_add$/, async (msg, match) => {
 
     await summonGroup.save()
 
-    bot.sendMessage(chatId, 'You are added to the group')
+    // bot.sendMessage(chatId, 'You are added to the group')
+
+    bot.sendMessage(chatId, `You were ***added*** in the group ***default***`, {
+      reply_to_message_id: msg.message_id,
+      parse_mode: 'markdown',
+    })
   } catch (err) {
     console.log(err)
-    bot.sendMessage(chatId, 'Failed to test')
+
+    bot.sendMessage(chatId, `Failed and I don't know why`, {
+      reply_to_message_id: msg.message_id,
+      parse_mode: 'markdown',
+    })
   }
 })
 
@@ -255,7 +319,12 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
     if (groupChat === null) {
-      bot.sendMessage(chatId, 'This group is not created yet :(')
+      // bot.sendMessage(chatId, 'This group doesn't exist :(')
+
+      bot.sendMessage(chatId, `No group was created in this chat :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -265,7 +334,12 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
     }).exec()
 
     if (summonGroup === null) {
-      bot.sendMessage(chatId, 'This summon group is not created yet :(')
+      // bot.sendMessage(chatId, 'This summon group doesn't exist :(')
+
+      bot.sendMessage(chatId, `Group ***${commandTitle}*** doesn't exist :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -287,7 +361,16 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
     })
 
     if (findUser.length > 0) {
-      bot.sendMessage(chatId, 'You were already in this group')
+      // bot.sendMessage(chatId, 'You were already in this group')
+
+      bot.sendMessage(
+        chatId,
+        `You are already in the group ***${commandTitle}***`,
+        {
+          reply_to_message_id: msg.message_id,
+          parse_mode: 'markdown',
+        }
+      )
       return false
     }
 
@@ -295,10 +378,23 @@ bot.onText(/^\/summon_add\s(\S+)$/, async (msg, match) => {
 
     await summonGroup.save()
 
-    bot.sendMessage(chatId, 'You are added to the group')
+    bot.sendMessage(
+      chatId,
+      `You have been ***added*** in the group ***${commandTitle}***`,
+      {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      }
+    )
+
+    // bot.sendMessage(chatId, 'You are added to the group')
   } catch (err) {
     console.log(err)
-    bot.sendMessage(chatId, 'Failed to test')
+
+    bot.sendMessage(chatId, `Failed and I don't know why`, {
+      reply_to_message_id: msg.message_id,
+      parse_mode: 'markdown',
+    })
   }
 })
 
@@ -313,7 +409,12 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
     if (groupChat === null) {
-      bot.sendMessage(chatId, 'This group is not created yet :(')
+      // bot.sendMessage(chatId, 'This group doesn't exist :(')
+
+      bot.sendMessage(chatId, `No group was created in this chat :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -323,7 +424,12 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
     }).exec()
 
     if (summonGroup === null) {
-      bot.sendMessage(chatId, 'This summon group is not created yet :(')
+      // bot.sendMessage(chatId, 'This summon group doesn't exist :(')
+
+      bot.sendMessage(chatId, `Group ***default*** doesn't exist :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -345,7 +451,12 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
     })
 
     if (findUser.length === 0) {
-      bot.sendMessage(chatId, 'You are not in this group')
+      // bot.sendMessage(chatId, 'You are not in this group')
+
+      bot.sendMessage(chatId, `You are not in the group ***default***`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -357,7 +468,16 @@ bot.onText(/^\/summon_rem$/, async (msg, match) => {
 
     await summonGroup.save()
 
-    bot.sendMessage(chatId, 'You are removed from this group')
+    // bot.sendMessage(chatId, 'You are removed from this group')
+
+    bot.sendMessage(
+      chatId,
+      `You have been ***removed*** from the group ***default***`,
+      {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      }
+    )
   } catch (err) {
     console.log(err)
     bot.sendMessage(chatId, 'Failed to test')
@@ -377,7 +497,12 @@ bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
     let groupChat = await GroupChat.findOne({ telegram_id: msg.chat.id }).exec()
 
     if (groupChat === null) {
-      bot.sendMessage(chatId, 'This group is not created yet :(')
+      // bot.sendMessage(chatId, 'This group doesn't exist :(')
+
+      bot.sendMessage(chatId, `No group was created in this chat :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -387,7 +512,12 @@ bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
     }).exec()
 
     if (summonGroup === null) {
-      bot.sendMessage(chatId, 'This summon group is not created yet :(')
+      // bot.sendMessage(chatId, 'This summon group doesn't exist :(')
+
+      bot.sendMessage(chatId, `Group ***${commandTitle}*** doesn't exist :(`, {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      })
       return false
     }
 
@@ -409,7 +539,16 @@ bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
     })
 
     if (findUser.length === 0) {
-      bot.sendMessage(chatId, 'You are not in this group')
+      // bot.sendMessage(chatId, 'You are not in this group')
+
+      bot.sendMessage(
+        chatId,
+        `You are not in the group ***${commandTitle}***`,
+        {
+          reply_to_message_id: msg.message_id,
+          parse_mode: 'markdown',
+        }
+      )
       return false
     }
 
@@ -421,9 +560,66 @@ bot.onText(/^\/summon_rem\s(\S+)$/, async (msg, match) => {
 
     await summonGroup.save()
 
-    bot.sendMessage(chatId, 'You are removed from this group')
+    // bot.sendMessage(chatId, 'You are removed from this group')
+
+    bot.sendMessage(
+      chatId,
+      `You have been ***removed*** from the group ***${commandTitle}***`,
+      {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'markdown',
+      }
+    )
   } catch (err) {
     console.log(err)
-    bot.sendMessage(chatId, 'Failed to test')
+
+    bot.sendMessage(chatId, `Failed and I don't know why`, {
+      reply_to_message_id: msg.message_id,
+      parse_mode: 'markdown',
+    })
   }
 })
+
+// bot.onText(/^\/summon_gl$/, async (msg, match) => {
+//   if (msg.from.is_bot) return false
+//   if (msg.chat.type === 'private') return false
+//   console.log(msg, match)
+//
+//   const chatId = msg.chat.id
+//
+//   let data = await bot.getChatMember(msg.chat.id, msg.from.id)
+//
+//   console.log(data)
+//
+//   bot.sendMessage(chatId, `Here I'll show the group list of this chat`, {
+//     reply_to_message_id: msg.message_id,
+//     parse_mode: 'markdown',
+//   })
+// })
+//
+// bot.onText(/^\/summon_del_g\s(\S+)$/, async (msg, match) => {
+//   if (msg.from.is_bot) return false
+//   if (msg.chat.type === 'private') return false
+//   console.log(msg, match)
+//
+//   const commandTitle = match[1]
+//
+//   const chatId = msg.chat.id
+//
+//   let data = await bot.getChatMember(msg.chat.id, msg.from.id)
+//
+//   if (!(data.status === 'creator' || data.status === 'administrator')) {
+//     bot.sendMessage(chatId, `You are not an ***admin*** from this chat`, {
+//       reply_to_message_id: msg.message_id,
+//       parse_mode: 'markdown',
+//     })
+//     return false
+//   }
+//
+//   console.log(data)
+//
+//   bot.sendMessage(chatId, `This command will delete a group`, {
+//     reply_to_message_id: msg.message_id,
+//     parse_mode: 'markdown',
+//   })
+// })
